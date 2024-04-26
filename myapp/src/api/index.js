@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const urlProd = "http://localhost:3001/products"
-const urlUser = "http://localhost:3001/users"
+const urlProd = "https://digital-marketplace-app.onrender.com/products"
+const urlUser = "https://digital-marketplace-app.onrender.com/users"
 
 const createNewProduct = async (newPro) => {
     await axios.post(urlProd + "/addProduct", newPro)
