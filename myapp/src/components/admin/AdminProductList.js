@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { UpdateProductStatus } from '../../api';
 import { BsSearch } from "react-icons/bs";
-import Footer from '../Footer';
+
 
 
 function ProductRow({ product }) {
   const handleApprove = async () => {
-    const updated = await UpdateProductStatus({ ...product, status: "approved" });
+    await UpdateProductStatus({ ...product, status: "approved" });
     window.location.reload(true);
   };
 
   const handleReject = async () => {
-    const updated = await UpdateProductStatus({ ...product, status: "pending" });
+    await UpdateProductStatus({ ...product, status: "pending" });
     window.location.reload(true);
   };
 

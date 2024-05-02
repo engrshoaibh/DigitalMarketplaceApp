@@ -6,7 +6,7 @@ function AdminSellerList() {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const itemsPerPage =5
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true); // Add loading state to handle data fetching state
   const [error, setError] = useState(null); // Add error state to handle errors during fetching
@@ -21,7 +21,7 @@ function AdminSellerList() {
       const userData = await FetchAllUsers();
       setUsers(userData);
       setFilteredUsers(userData);
-      console.log(`bro this is user data list`,userData)
+     
       setLoading(false); // Update loading state after successful fetching
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -32,12 +32,12 @@ function AdminSellerList() {
   fetchData()
   const handleApprove = async (seller) => {
     console.log(`Seller ${seller.id} approved`);
-    const updated = await UpdateUserStatus({ ...seller, status: "approved" });
+    await UpdateUserStatus({ ...seller, status: "approved" });
     window.location.reload(true);
   };
   const handleReject = async (seller) => {
     console.log(`Seller ${seller.id} rejected`);
-    const updated = await UpdateUserStatus({ ...seller, status: "pending" });
+    await UpdateUserStatus({ ...seller, status: "pending" });
     window.location.reload(true);
   };
 

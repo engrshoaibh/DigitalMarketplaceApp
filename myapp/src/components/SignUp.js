@@ -1,9 +1,23 @@
 import React, { useState } from 'react';
 import { RegisterUser } from '../api';
+import Toast from './Toast';
 function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('customer');
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [messageType, setMessageType] = useState('error');
+
+  const handleShowToast = (message,type) => {
+    setMessageType(type)
+    setToastMessage(message);
+    setShowToast(true);
+  };
+
+  const handleCloseToast = () => {
+    setShowToast(false);
+  };
 
   const handleEmailChange = (event) => {
     console.log(event.target.value)
@@ -22,7 +36,7 @@ function SignUp() {
     e.preventDefault();
 
     if(email === "" || password === "" || userType === ""){
-        return alert("Fill All the fields!!! \nYou cannot register with empty fields!")
+        return handleShowToast("All fields are required")
     }
 
     let userStatus = "pending";
@@ -38,7 +52,9 @@ function SignUp() {
         userStatus : userStatus
     })
     await newUser.save
-    alert("Voila! Your has been Successfully Registered Just wait for approval frm Admin!!!")
+    
+    handleShowToast("Your has been Successfully Registered Just wait for approval frm Admin",'success')
+
   };
 
   return (
@@ -106,6 +122,9 @@ function SignUp() {
           Sign up
         </button>
       </div>
+      {showToast && (
+      <Toast message={toastMessage} onCloseToast={handleCloseToast} messageType={messageType} />
+    )}
     </div>
   );
 }

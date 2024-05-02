@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+
 import { BsChevronLeft, BsChevronRight, BsFilter, BsSearch } from "react-icons/bs";
 import Footer from './Footer';
 import ViewProduct from './ViewProduct'; // Import the ViewProduct component
@@ -96,26 +96,33 @@ function Products({ allProducts }) {
                     </div>
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {currentProducts.map(product => (
-                       <div
-                       key={product.id}
-                       onClick={() => handleProductClick(product)}
-                       className="bg-white rounded-lg shadow-md overflow-hidden hover: cursor-pointer product-card"
-                     >
-                       <div className="p-6">
-                         <div className="mb-4 ">
-                           <img
-                             src={product.imageFile} // Assuming product.image contains the URL of the image
-                             alt={product.name} // Alt text for accessibility
-                             className="w-50 h-50 rounded-lg"
-                           />
-                         </div>
-                         <h3 className="text-sm font-semibold mb-2">{product.proName}</h3>
-                 
-                         <p className="text-gray-700">${product.proPrice}</p>
-                       </div>
-                     </div>
-                    ))}
+
+                  
+                    {currentProducts?.map((product) => {
+                        if (product.proStatus === 'approved') {
+                            return (
+                                <div
+                            key={product.id}
+                            onClick={() => handleProductClick(product)}
+                            className="bg-white rounded-lg shadow-md overflow-hidden hover: cursor-pointer product-card"
+                        >
+                            <div className="p-6">
+                                <div className="mb-4 ">
+                                    <img
+                                        src={product.imageFile} // Assuming product.image contains the URL of the image
+                                        alt={product.name} // Alt text for accessibility
+                                        className="w-50 h-50 rounded-lg"
+                                    />
+                                </div>
+                                <h3 className="text-sm font-semibold mb-2">{product.proName}</h3>
+
+                                <p className="text-gray-700">${product.proPrice}</p>
+                            </div>
+                        </div>
+                            );
+                        }
+                        return null; // or any other fallback if needed
+                    })}
                 </div>
                 <div className="mt-6 flex justify-between items-center">
                     <button

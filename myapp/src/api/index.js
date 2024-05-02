@@ -43,16 +43,15 @@ const RegisterUser = async (newUser) => {
     await axios.post(urlUser + "/registerUser", newUser)
 }
 
-const LoginUser = async (setUser, userData) => {
+const LoginUser = async (userData) => {
     try {
         console.log("User Data", userData);
         
         const response = await axios.post(urlUser + "/loginUser", userData);
-        // console.log("Response Data", response.data.user); // Log response data for debugging
-        setUser(response.data); // Update user state with response data
-        // return response.data.user
+       
+       
         if(response.data.user && response.data.user.userStatus === "approved"){
-            return response.data.user.userType;
+            return response.data.user;
         }
         return false;
 

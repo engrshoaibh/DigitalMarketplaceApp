@@ -3,16 +3,30 @@ import React, { useState } from 'react';
 import { LoginUser } from '../api';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from './context/UserContext';
+import Toast from './Toast';
 
 function LoginPage() {
   const { setUserData } = useUser()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('customer');
-  const [user, setUser] = useState([]);
-  const navigate = useNavigate(); // Use useNavigate instead of useHistory
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [messageType, setMessageType] = useState('error');
 
-  const handleEmailChange = (event)  => {
+  const handleShowToast = (message, type) => {
+    setMessageType(type)
+    setToastMessage(message);
+    setShowToast(true);
+  };
+
+  const handleCloseToast = () => {
+    setShowToast(false);
+  };
+
+  const navigate = useNavigate();
+
+  const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
 
@@ -26,7 +40,7 @@ function LoginPage() {
 
   const handleLogin = async () => {
     if (email === "" || password === "" || userType === "") {
-      alert("Fill All the fields!!! \nYou cannot Login with empty fields!");
+      handleShowToast('All fields are required')
       return;
     }
 
@@ -37,19 +51,31 @@ function LoginPage() {
     };
 
     try {
-      const foundUser = await LoginUser(setUser, userData);
-      setUserData(foundUser)
+      const foundUser = await LoginUser(userData);
+
+
+
+      
 
       if (foundUser) {
+
+        handleShowToast('Login Success', 'success')
+
+       
+          if (foundUser.userType.toLowerCase() === "customer") {
+
+            navigate("/");
+
+          } else if (foundUser.userType.toLowerCase() === "seller") {
+
+            navigate("/seller/seller-dashboard");
+          } else if (foundUser.userType.toLowerCase() === "admin") {
+
+            navigate("/admin/admin-dashboard");
+          }
         
-        if (foundUser.toLowerCase() === "customer") {
-          console.log(foundUser)
-          navigate("/"); // Use navigate for redirection
-        } else if (foundUser.toLowerCase() === "seller") {
-          navigate("/seller/seller-dashboard");
-        } else if (foundUser.toLowerCase() === "admin") {
-          navigate("/admin/admin-dashboard");
-        }
+        setUserData(foundUser)
+
       } else {
         alert("Either your email or password is incorrect or you are not a seller/admin.");
       }
@@ -124,7 +150,12 @@ function LoginPage() {
           Login
         </button>
       </div>
+      {showToast && (
+        <Toast message={toastMessage} onCloseToast={handleCloseToast} messageType={messageType} />
+      )}
     </div>
+
+
   );
 }
 

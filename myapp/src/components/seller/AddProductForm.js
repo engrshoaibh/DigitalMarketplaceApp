@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { createNewProduct,GetCategories } from '../../api';
 import Select from "react-select";
+import Toast from '../Toast'
 
 function AddProductForm() {
   const [toastMessage, setToastMessage] = useState("")
@@ -37,7 +38,7 @@ function AddProductForm() {
     var reader = new FileReader();
     reader.readAsDataURL(e.target.files[0])
     reader.onload = () => {
-        //console.log(reader.result)
+        
         setSelectedFile(reader.result)
     }
 
@@ -70,9 +71,10 @@ function AddProductForm() {
     await newProductAdded.save
 
     if(newProductAdded){
-      console.log('Product added successfully')
+      <Toast message={'Product added successfully'} />
+      
     }
-    alert("Product has been added.")
+    
 
     setproName("")
     setproDesc("")

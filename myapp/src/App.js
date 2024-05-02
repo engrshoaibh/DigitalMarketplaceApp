@@ -15,15 +15,17 @@ import AddCategoryList from "./components/admin/AdminCategoryList"
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/Home';
-import Footer from './components/Footer';
+
 import About from './components/About';
 import { UserProvider } from './components/context/UserContext';
 import PrivacyPolicy from './components/PrivacyPolicy';
 
 function App() {
+  
+ 
   const [products, setProducts] = useState([]);
 
-  const FetchProducts = () => {
+  const fetchProducts = () => {
     try {
       let fetchedData = FetchAllProducts(setProducts);
       console.log("Fetched Data  ", fetchedData);
@@ -34,35 +36,38 @@ function App() {
   };
 
   useEffect(() => {
-    FetchProducts();
+    fetchProducts();
     console.log("Products", products);
     setProducts(products);
-  }, []);
+  }, [products]);
 
   return (
     <div>
       <Router>
         <UserProvider>
-        <Navbar />
+          <Navbar />
           <Routes>
             <Route path="/" element={<Home allProducts={products} />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<LoginPage />} />
+            
+           
+                <Route path="/admin/showProducts" element={<AdminProductList allProducts={products} />} />
+                <Route path="/admin/addCategory" element={<AddCategoryList allProducts={products} />} />
+                <Route path="/admin/showUsers" element={<AdminSellerList />} />
+             
+
             <Route path="/seller/seller-dashboard" element={<SellerDashboard />} />
             <Route path="/admin/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/seller/add-product" element={<AddProductForm />} />
-            <Route path="/products" element={<Products allProducts={products} />} />
             <Route path="/seller/showProducts" element={<ProductList allProducts={products} />} />
-            <Route path="/admin/showProducts" element={<AdminProductList allProducts={products} />} />
-            <Route path="/admin/addCategory" element={<AddCategoryList allProducts={products} />} />
-            <Route path="/admin/showUsers" element={<AdminSellerList/>} />
+
+            <Route path="/products" element={<Products allProducts={products} />} />
+
             <Route path="/about-us" element={<About />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-
           </Routes>
-          </UserProvider>
-        {/* <Footer /> */}
-
+        </UserProvider>
       </Router>
     </div>
   );
