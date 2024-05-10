@@ -12,7 +12,7 @@ import ProductList from './components/seller/ProductList';
 import AdminProductList from './components/admin/AdminProductList';
 import AdminSellerList from './components/admin/AdminSellerList';
 import AddCategoryList from "./components/admin/AdminCategoryList"
-
+import SearchScreen from './components/SearchScreen';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/Home';
 
@@ -66,6 +66,7 @@ function App() {
 
             <Route path="/about-us" element={<About />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path = "/search" element = {<SearchScreen />} />
           </Routes>
         </UserProvider>
       </Router>

@@ -12,7 +12,7 @@ const FetchAllProducts = async (setProducts) => {
     .then((res) => {
         setProducts(res.data)
     }).catch((err) => {
-        console.log("Error While Fetching Products Data!!!")
+        console.log(err)
     })
 }
 
@@ -97,5 +97,15 @@ const AddCategory = async (category) => {
     await axios.post(urlProd + "/addCategory", category)
     window.location.reload(true)
 }
-export {createNewProduct, FetchAllProducts, RegisterUser, LoginUser, UpdateProductStatus, UpdateUserStatus, FetchAllUsers, GetCategories, AddCategory, DeleteProduct}
+const SearchProducts = async (searchQuery) => {
+    try {
+        const response = await axios.get(`${urlProd}/searchProducts?query=${searchQuery}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error while searching products:", error);
+        throw error;
+    }
+};
+
+export {createNewProduct, FetchAllProducts, RegisterUser, LoginUser, UpdateProductStatus, UpdateUserStatus, FetchAllUsers, GetCategories, AddCategory, DeleteProduct,SearchProducts}
 
