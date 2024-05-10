@@ -104,10 +104,26 @@ const getCategory = async (req, res) => {
     }
 }
 const searchProducts = async (req, res) => {
+    const keyword = req.query.proName;
+
     try {
-        const searchQuery = req.query.search;
-        const searchResults = await Product.find({ proName: { $regex: searchQuery, $options: 'i' } });
-        res.json(searchResults);
+        const result = await Product.aggregate(
+            [
+                {
+                  $search: {
+                    index: "SearchProduct",
+                    text: {
+                      query: keyword,
+                      path: {
+                        wildcard: "*"
+                      }
+                    }
+                  }
+                }
+              ]
+        )
+       
+        res.status(200).send(result)
     } catch (error) {
         console.error('Error searching for products:', error);
         res.status(500).json({ message: 'Internal server error' });

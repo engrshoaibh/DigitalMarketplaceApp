@@ -19,5 +19,5 @@ router.post("/addCategory", addCategory)
 
 router.get("/getCategory", getCategory)
 
-router.get('/searchProducts', searchProducts)
+router.get('/search', searchProducts)
 module.exports = router
