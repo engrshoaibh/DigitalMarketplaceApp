@@ -6,7 +6,7 @@ const Category = require('../schemas/categorySchema')
 
 const addProduct = async (req, res) => {
     const productData = req.body
-    //console.log(postData)
+   
     try {
         const newPro = new Product({ ...productData })
         await newPro.save()
@@ -120,7 +120,7 @@ const searchProducts = async (req, res) => {
                     }
                   }
                 }
-              ]
+            ]
         )
        
         res.status(200).send(result)

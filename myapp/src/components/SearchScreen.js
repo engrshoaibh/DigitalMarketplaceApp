@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import Footer from './Footer';
 import ViewProduct from './ViewProduct'; // Import the ViewProduct component
-import { SearchProducts } from "../api";
+import { useNavigate } from 'react-router-dom';
+import HomeProduct from './HomeProduct'
+import axios from 'axios';
+import Loading from './Loading'; // Import the Loading component
+
 function SearchScreen() {
+    const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [loading, setLoading] = useState(false); // State to manage loading animation
     const productsPerPage = 12; // Change this value based on your preference for products per page
 
     // Pagination logic
@@ -28,13 +34,22 @@ function SearchScreen() {
         setSelectedProduct(null);
     };
 
-    const handleSearch = async (query) => {
+    const handleSearch = async () => {
         try {
-            const searchResults = await SearchProducts(query);
-            console.log("Search results:", searchResults);
-            // Update state or perform other actions with the search results
+            if (!searchQuery) {
+                return;
+            }
+
+            setLoading(true); 
+            const response = await axios.get(`https://digital-marketplace-app.onrender.com/products/search?proName=${searchQuery}`);
+            setLoading(false); 
+            
+            navigate(`/search?proName=${encodeURIComponent(searchQuery)}`);
+            setSearchResults(response.data);
+            setCurrentPage(1); // Reset pagination to first page
         } catch (error) {
             console.error("Error while searching products:", error);
+            setLoading(false); // Hide loading animation in case of error
         }
     };
 
@@ -44,55 +59,43 @@ function SearchScreen() {
                 <h2 className="text-3xl font-extrabold text-gray-900 mb-8">
                     Search Products
                 </h2>
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Enter search query..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-md"
-                    />
+                <div className='flex justify-center w-full gap-5'>
+                    <div className='w-1/2  shadow-md'>
+                        <input
+                            type="text"
+                            placeholder="Enter search query..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <button 
+                        onClick={handleSearch}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 shadow-md"
+                    >
+                        Search
+                    </button>
                 </div>
-                <button
-                    onClick={handleSearch(searchQuery)}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                >
-                    Search
-                </button>
+
+                {/* Loading animation */}
+                {loading && <Loading />}
+
                 {/* Display search results or message if no results */}
                 {searchResults.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {currentProducts?.map((product) => (
-                            <div
-                                key={product.id}
-                                onClick={() => handleProductClick(product)}
-                                className="bg-white rounded-lg shadow-md overflow-hidden hover: cursor-pointer product-card"
-                            >
-                                <div className="p-6">
-                                    <div className="mb-4">
-                                        <img
-                                            src={product.imageFile}
-                                            alt={product.name}
-                                            className="w-50 h-50 rounded-lg"
-                                            style={{
-                                                resizeMode: 'contain',
-                                                flex: 1,
-                                                aspectRatio: 1
-                                            }}
-                                        />
-                                    </div>
-                                    <h3 className="text-sm font-semibold mb-2">{product.proName}</h3>
-                                    <p className="text-gray-700">${product.proPrice}</p>
-                                </div>
-                            </div>
-                        ))}
+                        {currentProducts?.map((product) => {
+                            if (product.proStatus === 'approved') {
+                                return <HomeProduct key={product.id} product={product} />
+                            }
+                            return null;
+                        })}
                     </div>
                 ) : (
                     <div className="text-center text-gray-600 font-semibold mt-8">
                         No products found.
                     </div>
                 )}
-                {/* Pagination */}
+
                 {searchResults.length > productsPerPage && (
                     <div className="mt-6 flex justify-between items-center">
                         <button

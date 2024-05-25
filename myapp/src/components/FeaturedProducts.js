@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 import HomeProduct from "./HomeProduct";
+import Loading from "./Loading";
 
 const FeaturedProducts = ({ allProducts }) => {
   const products = allProducts?.slice(0, 8);
@@ -12,12 +13,25 @@ const FeaturedProducts = ({ allProducts }) => {
           Latest Products
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products?.map((product) => {
-            if (product.proStatus === 'approved') {
-              return <HomeProduct key={product.id} product={product} />;
-            }
-            return null; // or any other fallback if needed
-          })}
+          {
+            allProducts.length > 1 ? 
+            products?.map((product) => {
+              if (product.proStatus === 'approved') {
+                return <HomeProduct key={product.id} product={product} />
+              }
+              
+            })
+           
+            :(
+              <div className="flex justify-center">
+                  {<Loading/ > }
+              </div>
+              
+            )
+          }
+        
+
+          
         </div>
         <div className="mt-5 text-center">
           <Link to={'/products'}>

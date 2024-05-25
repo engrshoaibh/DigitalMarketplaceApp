@@ -20,7 +20,7 @@ const Toast = ({ message, onCloseToast, messageType }) => {
   }, [onCloseToast]);
 
 
-    if (messageType == 'success') {
+    if (messageType ==='success') {
       return(
 
         <div className={`flex-col fixed bottom-4 right-4 w-64 bg-green-500 text-white px-4 py-2 rounded-md shadow-md flex justify-between uppercase font-medium`}>

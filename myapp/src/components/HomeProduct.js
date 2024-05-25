@@ -1,7 +1,7 @@
 import React from "react";
 import ViewProduct from './ViewProduct'; // Import the ViewProduct component
 import { useState } from 'react';
-
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
 const Product = ({ product }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -21,24 +21,36 @@ const Product = ({ product }) => {
 
         key={product.id}
         onClick={() => handleProductClick(product)}
-        className="bg-white rounded-lg shadow-md overflow-hidden hover: cursor-pointer product-card"
+        className="bg-white rounded-lg shadow-md overflow-hidden hover: cursor-pointer product-card m-5"
+        style={
+          {
+            width: "fit-content"
+          }
+        }
       >
-        <div className="p-6" >
+        <div className="p-6 " >
           <div className="mb-4 h-full" >
             <img
-              src={product.imageFile} // Assuming product.image contains the URL of the image
-              alt={product.proName} // Alt text for accessibility
-              className="w-50 h-50 rounded-lg "
+              src={product.imageFile}
+              alt={product.proName}
+              className=" rounded-lg "
               style={{
                 resizeMode: 'contain',
                 flex: 1,
-                aspectRatio: 1 
+                aspectRatio: 1,
+                width: "100%",
+
               }}
             />
           </div>
           <h3 className="text-sm font-semibold mb-2">{product.proName}</h3>
 
           <p className="text-gray-700">${product.proPrice}</p>
+          <div className='flex items-center pt-2'>
+            <FaMapMarkerAlt />
+            <p className="text-gray-700">{product?.proLocation}</p>
+
+          </div>
         </div>
       </div>
       <ViewProduct

@@ -155,7 +155,7 @@ function ProductList({ allProducts }) {
         </tbody>
       </table>
 
-      {/* Pagination */}
+  
       {paginationJSX}
 
       {/* Edit Product Modal */}

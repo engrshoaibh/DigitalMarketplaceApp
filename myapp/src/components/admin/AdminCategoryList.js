@@ -18,7 +18,7 @@ const AddCategoryList = () => {
     fetchCategories();
     console.log("Categories : ", category);
     setCategory(category);
-  }, []);
+  }, [category]);
 
   const handleChange = (event) => {
     setCategoryName(event.target.value);

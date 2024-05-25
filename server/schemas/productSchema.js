@@ -6,7 +6,8 @@ const Product = mongoose.Schema({
     "proPrice" : "String",
     "proStatus" : "String",
     "imageFile" : "String",
-    "productCategory" : "String"
+    "productCategory" : "String",
+    "proLocation": "String"
 }, {
     collection: "Products",
     timestamps: true

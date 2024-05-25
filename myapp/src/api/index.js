@@ -99,8 +99,11 @@ const AddCategory = async (category) => {
 }
 const SearchProducts = async (searchQuery) => {
     try {
-        const response = await axios.get(`${urlProd}/searchProducts?query=${searchQuery}`);
+     
+        const response = await axios.get(`${urlProd}/search?proName=${searchQuery}`);
+        console.log("Search Products",response.data)
         return response.data;
+
     } catch (error) {
         console.error("Error while searching products:", error);
         throw error;

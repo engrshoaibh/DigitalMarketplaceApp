@@ -2,7 +2,7 @@ import React from 'react';
 import Footer from './Footer';
 
 const marketplaceName = "Shoaib's Marketplace";
-const marketplaceTagline = "Welcome to endless possibilities.";
+
 
 function PrivacyPolicy() {
   return (

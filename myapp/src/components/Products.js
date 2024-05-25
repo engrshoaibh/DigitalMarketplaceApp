@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { BsChevronLeft, BsChevronRight, BsSearch } from "react-icons/bs";
+import { BsChevronLeft, BsChevronRight, BsSearch,  } from "react-icons/bs";
+import { FaMapMarkerAlt } from 'react-icons/fa';
 import Footer from './Footer';
 import ViewProduct from './ViewProduct'; // Import the ViewProduct component
 import SearchModal from './SearchScreen'; // Import the SearchModal component
@@ -47,7 +48,7 @@ function Products({ allProducts }) {
                 </h2>
                 <Link
                     to="/search"
-                    className="text-gray-600 hover:text-gray-800 flex items-center"
+                    className="text-gray-600 hover:text-gray-800 flex items-center ml-5"
                 >
                     <BsSearch className="h-6 w-6 mr-1" />
                     Search
@@ -57,7 +58,12 @@ function Products({ allProducts }) {
                         <div
                             key={product.id}
                             onClick={() => handleProductClick(product)}
-                            className="bg-white rounded-lg shadow-md overflow-hidden hover: cursor-pointer product-card"
+                            className="bg-white rounded-lg shadow-md overflow-hidden hover: cursor-pointer product-card  m-5"
+                            style={
+                                {
+                                  width: "fit-content"
+                                }
+                              }
                         >
                             <div className="p-6">
                                 <div className="mb-4">
@@ -74,6 +80,11 @@ function Products({ allProducts }) {
                                 </div>
                                 <h3 className="text-sm font-semibold mb-2">{product.proName}</h3>
                                 <p className="text-gray-700">${product.proPrice}</p>
+                                <div className='flex items-center pt-2'>
+                                <FaMapMarkerAlt />
+                                <p className="text-gray-700">{product?.proLocation}</p>
+
+                                </div>
                             </div>
                         </div>
                     ))}
