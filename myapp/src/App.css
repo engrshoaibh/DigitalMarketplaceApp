@@ -36,10 +36,78 @@
     transform: rotate(360deg);
   }
 }
-.product-card {
-  transition: transform 0.3s ease-in-out;
-}
+
 
 .product-card:hover {
   transform: translateY(-5px);
+}
+.product-card {
+  flex: 1 1 calc(25% - 1rem); /* Flex basis for 4 columns layout */
+  box-sizing: border-box;
+  transition: transform 0.3s ease-in-out;
+}
+
+@media (max-width: 1200px) {
+  .product-card {
+    flex: 1 1 calc(33.33% - 1rem); /* 3 columns layout */
+  }
+}
+
+@media (max-width: 900px) {
+  .product-card {
+    flex: 1 1 calc(50% - 1rem); /* 2 columns layout */
+  }
+}
+
+@media (max-width: 600px) {
+  .product-card {
+    flex: 1 1 calc(100% - 1rem); /* 1 column layout */
+  }
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Add this to your CSS file or as inline styles in your component */
+
+.table-container {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  min-width: 640px; /* Ensure the table is wide enough */
+}
+
+.table th,
+.table td {
+  padding: 8px 16px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+@media (max-width: 768px) {
+  .table th,
+  .table td {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .pagination {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pagination button {
+    margin: 4px 0;
+  }
 }

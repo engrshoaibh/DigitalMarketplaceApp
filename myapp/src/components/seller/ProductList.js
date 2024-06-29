@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
 import { DeleteProduct } from '../../api';
+
 function EditProductModal({ product, onSave, onCancel }) {
   const [editedProduct, setEditedProduct] = useState(product);
 
@@ -17,8 +18,8 @@ function EditProductModal({ product, onSave, onCancel }) {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 ">
-      <div className="bg-white p-8 rounded-lg w-full max-w-md">
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+      <div className="bg-white p-4 rounded-lg w-full max-w-md mx-2 sm:p-8">
         <h2 className="text-lg font-bold mb-4">Edit Product</h2>
         <div className="mb-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
@@ -44,15 +45,24 @@ function EditProductModal({ product, onSave, onCancel }) {
     </div>
   );
 }
-const deleteProduct = (productId, product) => {
-    // Perform delete logic here
-    console.log("Product to Delete : ", product)
-    console.log(`Delete product with ID: ${productId}`);
 
-    DeleteProduct(product)
-    alert("Product Delete Successfully!!!")
-    window.location.reload()
-  };
+const truncateString = (str, num) => {
+  if (str.length > num) {
+    return str.slice(0, num) + '...';
+  } else {
+    return str;
+  }
+};
+
+const deleteProduct = (productId, product) => {
+  // Perform delete logic here
+  console.log("Product to Delete: ", product);
+  console.log(`Delete product with ID: ${productId}`);
+
+  DeleteProduct(product);
+  alert("Product Deleted Successfully!!!");
+  window.location.reload();
+};
 
 function ProductList({ allProducts }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -82,22 +92,26 @@ function ProductList({ allProducts }) {
   // Pagination JSX
   const paginationJSX = (
     <div className="mt-6 flex justify-between items-center">
-      <button
-        onClick={() => paginate(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="text-gray-600 hover:text-gray-800 disabled:opacity-50 flex items-center"
-      >
-        <BsChevronLeft className="h-6 w-6 mr-1" />
-        Previous
-      </button>
-      <button
-        onClick={() => paginate(currentPage + 1)}
-        disabled={indexOfLastProduct >= allProducts.length}
-        className="text-gray-600 hover:text-gray-800 disabled:opacity-50 flex items-center"
-      >
-        Next
-        <BsChevronRight className="h-6 w-6 ml-1" />
-      </button>
+      {allProducts.length > productsPerPage && (
+        <>
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="text-gray-600 hover:text-gray-800 disabled:opacity-50 flex items-center"
+          >
+            <BsChevronLeft className="h-6 w-6 mr-1" />
+            Previous
+          </button>
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={indexOfLastProduct >= allProducts.length}
+            className="text-gray-600 hover:text-gray-800 disabled:opacity-50 flex items-center"
+          >
+            Next
+            <BsChevronRight className="h-6 w-6 ml-1" />
+          </button>
+        </>
+      )}
     </div>
   );
 
@@ -134,13 +148,13 @@ function ProductList({ allProducts }) {
                 <img src={product.imageFile} alt="" className="w-12 h-12 object-cover rounded-lg" />
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900">{product.proName}</div>
+                <div className="text-sm font-medium text-gray-900">{truncateString(product.proName, 30)}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-900">$ {product.proPrice}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">{product.proDesc}</div>
+                <div className="text-sm text-gray-900">{truncateString(product.proDesc, 30)}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className={`text-sm font-bold px-2 py-1 rounded ${product.proStatus === 'approved' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
@@ -149,13 +163,12 @@ function ProductList({ allProducts }) {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <button onClick={() => deleteProduct(product.id, product)} className="text-red-600 hover:text-red-900">Delete</button>
-              </td> 
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-  
       {paginationJSX}
 
       {/* Edit Product Modal */}

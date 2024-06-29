@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createNewProduct, GetCategories } from '../../api';
 import Select from "react-select";
-import Toast from '../Toast';
+
 
 const europeanCountries = [
   { value: 'austria', label: 'Austria' },
@@ -36,8 +36,7 @@ const europeanCountries = [
 ];
 
 function AddProductForm() {
-  const [toastMessage, setToastMessage] = useState("");
-  const [showForm, setShowForm] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
   const [proName, setProName] = useState('');
   const [proDesc, setProDesc] = useState('');
   const [proPrice, setProPrice] = useState('');
@@ -48,7 +47,8 @@ function AddProductForm() {
 
   const fetchCategories = async () => {
     try {
-      const fetchedData = await GetCategories(setCategory);
+      const fetchedData = await GetCategories();
+      setCategory(fetchedData)
     } catch (error) {
       console.log(error);
     }
@@ -69,18 +69,29 @@ function AddProductForm() {
   };
 
   const handleFileChange = (e) => {
-    var reader = new FileReader();
-    reader.readAsDataURL(e.target.files[0]);
-    reader.onload = () => {
-      setSelectedFile(reader.result);
-    };
-    reader.onerror = (error) => {
-      console.log(error);
-    };
-  };
+    const file = e.target.files[0];
+    const reader = new FileReader();
 
-  const handleAddProduct = () => {
-    setShowForm(true);
+    reader.onload = function(event) {
+      const img = new Image();
+      img.src = event.target.result;
+
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = 600;
+        canvas.height = 800;
+
+        ctx.drawImage(img, 0, 0, 600, 800);
+
+        const resizedImage = canvas.toDataURL('image/jpeg');
+
+        setSelectedFile(resizedImage);
+      };
+    };
+
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (event) => {
@@ -88,6 +99,22 @@ function AddProductForm() {
 
     if (proName === "" || proDesc === "" || proPrice === "" || !selectedLocation || !selectedCategory || !selectedFile) {
       return alert("Fill all the fields! You cannot register with empty fields!");
+    }
+
+    // Validation for name length
+    if (proName.length > 50) {
+      return alert("Name should be maximum 50 characters long!");
+    }
+
+    // Validation for price
+    if (proPrice <= 0 || isNaN(proPrice)) {
+      return alert("Price must be greater than 0 and a valid number!");
+    }
+
+    // Validation for price decimal places
+    const priceParts = proPrice.split('.');
+    if (priceParts.length > 1 && priceParts[1].length > 2) {
+      return alert("Price must have a maximum of two decimal places!");
     }
 
     const newProduct = {
@@ -101,10 +128,8 @@ function AddProductForm() {
     };
 
     try {
-      const newProductAdded = await createNewProduct(newProduct);
-      if (newProductAdded) {
-        setToastMessage('Product added successfully');
-      }
+      await createNewProduct(newProduct);
+      setToastMessage('Product added successfully');
     } catch (error) {
       console.log(error);
       setToastMessage('Failed to add product');
@@ -117,6 +142,8 @@ function AddProductForm() {
     setSelectedCategory(null);
     setSelectedFile("");
   };
+
+ 
 
   return (
     <div className="max-w-md mx-auto bg-gray-100 p-8 rounded-md shadow-md mt-6 mb-6">
@@ -185,7 +212,14 @@ function AddProductForm() {
           <Select
             value={selectedCategory}
             onChange={handleCategoryChange}
-            options={category.map(item => ({ value: item.category.toLowerCase(), label: item.category }))}
+            options={
+             category.map(item => (
+                { value: item.category.toLowerCase(), label: item.category }
+              ))
+            
+            
+            }
+
             placeholder="Select product category"
             required
           />
@@ -195,7 +229,8 @@ function AddProductForm() {
         </button>
       </form>
       {toastMessage && (
-        <div className="mt-4 bg-gray-600 text-white font-bold py-2 px-4 rounded-lg">{toastMessage}</div>
+        
+        <div className="mt-4 bg-white-600 text-black font-bold py-2 px-4 rounded-lg">{toastMessage}</div>
       )}
     </div>
   );

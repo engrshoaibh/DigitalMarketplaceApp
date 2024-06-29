@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { RegisterUser } from '../api';
-import Toast from './Toast';
-import Loading from './Loading';
+import { RegisterUser } from '../../api';
+import Toast from '../Toast';
+import Loading from '../Loading';
 
-function SignUp() {
+
+function AdminAddPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('customer');
+  const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [messageType, setMessageType] = useState('error');
-  const [loading, setLoading] = useState(false);
 
   const handleShowToast = (message, type) => {
     setMessageType(type);
@@ -30,41 +30,35 @@ function SignUp() {
     setPassword(event.target.value);
   };
 
-  const handleUserTypeChange = (event) => {
-    setUserType(event.target.value.toLowerCase());
-  };
-
-  const handleSignUp = async (e) => {
+  const handleAddAdmin = async (e) => {
     e.preventDefault();
-  
-    if (email === "" || password === "" || userType === "") {
+
+    if (email === "" || password === "") {
       return handleShowToast("All fields are required", "error");
     }
-  
-    let userStatus = "pending";
-  
-    if (userType === "customer") {
-      userStatus = "approved";
-    }
-  
+
+    setLoading(true);
+
     try {
-      await RegisterUser({
+      const newUser = RegisterUser({
         email: email,
         password: password,
-        userType: userType,
-        userStatus: userStatus,
+        userType: 'admin',
+        userStatus: 'approved',
       });
-  
-      handleShowToast("You have been successfully registered. Please wait for approval from Admin.", "success");
+
+      await newUser.save();
+      handleShowToast("Admin account created successfully", "success");
     } catch (error) {
-      console.error("Error registering user:", error);
-      handleShowToast("Error registering user. Please try again later.", "error");
+      handleShowToast("Error creating admin account", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <h2 className="text-3xl font-bold mb-4">Sign Up</h2>
+      <h2 className="text-3xl font-bold mb-4">Admin Panel</h2>
       <div className="w-80 bg-white p-8 rounded-lg shadow-lg border border-gray-300">
         {loading ? (
           <div className="flex justify-center items-center h-full">
@@ -82,20 +76,8 @@ function SignUp() {
               <input type="password" className="grow" value={password} onChange={handlePasswordChange} placeholder="Password" />
             </label>
 
-            <div className="mb-4">
-              <label className="block mb-2 text-sm font-bold">User Type</label>
-              <label className="inline-flex items-center">
-                <input type="radio" value="seller" checked={userType === 'seller'} onChange={handleUserTypeChange} className="mr-2" />
-                Seller
-              </label>
-              <label className="inline-flex items-center ml-4">
-                <input type="radio" value="customer" checked={userType === 'customer'} onChange={handleUserTypeChange} className="mr-2" />
-                Customer
-              </label>
-            </div>
-
-            <button className="w-full bg-blue-500 text-white font-bold py-2 rounded-lg hover:bg-blue-600" onClick={handleSignUp}>
-              Sign Up
+            <button className="w-full bg-blue-500 text-white font-bold py-2 rounded-lg hover:bg-blue-600" onClick={handleAddAdmin}>
+              Add Admin
             </button>
           </>
         )}
@@ -105,4 +87,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default AdminAddPage;

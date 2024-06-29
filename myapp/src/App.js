@@ -11,66 +11,111 @@ import AddProductForm from './components/seller/AddProductForm';
 import ProductList from './components/seller/ProductList';
 import AdminProductList from './components/admin/AdminProductList';
 import AdminSellerList from './components/admin/AdminSellerList';
-import AddCategoryList from "./components/admin/AdminCategoryList"
+import AddCategoryList from './components/admin/AdminCategoryList';
+import AdminPanel from './components/admin/AdminPanel';
 import SearchScreen from './components/SearchScreen';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AdminLogin from './components/admin/AdminLoginPage';
+import AdminSignup from './components/admin/AdminAddPage';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './components/Home';
-
 import About from './components/About';
-import { UserProvider } from './components/context/UserContext';
+import { UserProvider, useUser } from './components/context/UserContext';
 import PrivacyPolicy from './components/PrivacyPolicy';
+import Loading from './components/Loading';
+
+const ProtectedRoute = ({ element, role }) => {
+  const { userData } = useUser();
+
+  if (!userData) {
+    return <Navigate to="/login" />;
+  }
+
+  if (role && userData.userType !== role) {
+    return <Navigate to="/login" />;
+  }
+
+  return element;
+};
 
 function App() {
-  
- 
+  const [loading, setLoading] = useState(true);  // initially true to show the loader
   const [products, setProducts] = useState([]);
 
-  const fetchProducts = () => {
-    try {
-      let fetchedData = FetchAllProducts(setProducts);
-      console.log("Fetched Data  ", fetchedData);
-      setProducts(fetchedData);
-    } catch (error) {
-      console.log(error);
-    }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const fetchProducts = async () => {
+    await FetchAllProducts(setProducts);
   };
 
   useEffect(() => {
     fetchProducts();
-    console.log("Products", products);
-    setProducts(products);
-  }, [products]);
+  }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
-    <div>
+    <UserProvider>
       <Router>
-        <UserProvider>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home allProducts={products} />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/login" element={<LoginPage />} />
-            
-           
-                <Route path="/admin/showProducts" element={<AdminProductList allProducts={products} />} />
-                <Route path="/admin/addCategory" element={<AddCategoryList allProducts={products} />} />
-                <Route path="/admin/showUsers" element={<AdminSellerList />} />
-             
+        <Navbar />
+        <Routes>
+          <Route exact path="/" element={<Home allProducts={products} />} />
+          <Route exact path="/signup" element={<SignUp />} />
+          <Route exact path="/login" element={<LoginPage />} />
 
-            <Route path="/seller/seller-dashboard" element={<SellerDashboard />} />
-            <Route path="/admin/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/seller/add-product" element={<AddProductForm />} />
-            <Route path="/seller/showProducts" element={<ProductList allProducts={products} />} />
+          {/* Admin Routes */}
+          <Route
+            exact
+            path="/admin/showProducts"
+            element={<ProtectedRoute element={<AdminProductList allProducts={products} />} role="admin" />}
+          />
+          <Route
+            exact
+            path="/admin/addCategory"
+            element={<ProtectedRoute element={<AddCategoryList allProducts={products} />} role="admin" />}
+          />
+          <Route
+            exact
+            path="/admin/showUsers"
+            element={<ProtectedRoute element={<AdminSellerList />} role="admin" />}
+          />
+          <Route
+            exact
+            path="/adminpanel"
+            element={<ProtectedRoute element={<AdminPanel />} role="admin" />}
+          />
+          <Route
+            exact
+            path="/adminpanel/login"
+            element={<ProtectedRoute element={<AdminLogin />} role="admin" />}
+          />
+          <Route
+            exact
+            path="/adminpanel/signup"
+            element={<ProtectedRoute element={<AdminSignup />} role="admin" />}
+          />
 
-            <Route path="/products" element={<Products allProducts={products} />} />
+          {/* Seller Routes */}
+          <Route exact path="/seller/seller-dashboard" element={<SellerDashboard />} />
+          <Route exact path="/admin/admin-dashboard" element={<AdminDashboard />} />
+          <Route exact path="/seller/add-product" element={<AddProductForm />} />
+          <Route exact path="/seller/showProducts" element={<ProductList allProducts={products} />} />
 
-            <Route path="/about-us" element={<About />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path = "/search" element = {<SearchScreen />} />
-          </Routes>
-        </UserProvider>
+          {/* General Routes */}
+          <Route exact path="/products" element={<Products allProducts={products} />} />
+          <Route exact path="/about-us" element={<About />} />
+          <Route exact path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route exact path="/search" element={<SearchScreen />} />
+        </Routes>
       </Router>
-    </div>
+    </UserProvider>
   );
 }
 

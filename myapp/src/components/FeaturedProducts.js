@@ -1,11 +1,12 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import HomeProduct from "./HomeProduct";
 import Loading from "./Loading";
 
 const FeaturedProducts = ({ allProducts }) => {
   const products = allProducts?.slice(0, 8);
-  
+  const navigate = useNavigate();
+
   return (
     <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-100">
       <div className="max-w-7xl mx-auto">
@@ -14,31 +15,36 @@ const FeaturedProducts = ({ allProducts }) => {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {
-            allProducts.length > 1 ? 
+            allProducts && allProducts.length > 0 ? 
             products?.map((product) => {
               if (product.proStatus === 'approved') {
                 return <HomeProduct key={product.id} product={product} />
               }
-              
+              return null;
             })
-           
             :(
-              <div className="flex justify-center">
-                  {<Loading/ > }
+              <div className="col-span-full flex justify-center items-center">
+                <Loading />
               </div>
-              
             )
           }
-        
-
-          
         </div>
         <div className="mt-5 text-center">
-          <Link to={'/products'}>
-            <button className="bg-gray-900 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300">
-              View All Products
-            </button>
-          </Link>
+          {
+           products ? (
+            <button 
+            className="bg-gray-900 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300"
+            onClick={() => {
+              navigate('/products');
+              window.scrollTo(0, 0);
+            }}
+          >
+            View All Products
+          </button>
+           ):null
+            
+          }
+          
         </div>
       </div>
     </section>

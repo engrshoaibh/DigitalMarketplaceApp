@@ -1,20 +1,20 @@
 import axios from "axios";
 
-const urlProd = "https://digital-marketplace-app.onrender.com/products"
-const urlUser = "https://digital-marketplace-app.onrender.com/users"
+const urlProd = "http://localhost:3001/products"
+const urlUser = "http://localhost:3001/users"
 
 const createNewProduct = async (newPro) => {
     await axios.post(urlProd + "/addProduct", newPro)
 }
 
 const FetchAllProducts = async (setProducts) => {
-    await axios.get(urlProd + "/getProducts")
-    .then((res) => {
-        setProducts(res.data)
-    }).catch((err) => {
-        console.log(err)
-    })
-}
+    try {
+        const res = await axios.get(urlProd + "/getProducts");
+        setProducts(res.data);
+    } catch (err) {
+        console.log(err);
+    }
+};
 
 const DeleteProduct = async (product) => {
     console.log("Product Data In API", product)
@@ -82,10 +82,10 @@ const UpdateUserStatus = async (user) => {
     window.location.reload(true)
 }
 
-const GetCategories = async (setCategory) => {
+const GetCategories = async () => {
     try {
         const response = await axios.get(urlProd + "/getCategory")
-        setCategory(response.data)
+        
         return response.data;
       } catch (error) {
         console.error("Error while fetching users:", error);
@@ -97,6 +97,12 @@ const AddCategory = async (category) => {
     await axios.post(urlProd + "/addCategory", category)
     window.location.reload(true)
 }
+const DeleteCategory = async (id) => {
+    
+    await axios.delete(urlProd + `/deleteCategory/${id}`)
+    window.location.reload(true)
+}
+
 const SearchProducts = async (searchQuery) => {
     try {
      
@@ -109,6 +115,16 @@ const SearchProducts = async (searchQuery) => {
         throw error;
     }
 };
+const ForgotPassword = async(email,userType) =>{
+    console.log(email);
+    await axios.post(`${urlUser}/forgot-password`, {email,userType}).then((res)=> {
+        console.log("New password sent to your email successfully")
+        return res.data.message
+    }).catch((error) => {
+        console.log("Email not send", error);
+        return error.message
+    })
+}
 
-export {createNewProduct, FetchAllProducts, RegisterUser, LoginUser, UpdateProductStatus, UpdateUserStatus, FetchAllUsers, GetCategories, AddCategory, DeleteProduct,SearchProducts}
+export {createNewProduct, FetchAllProducts, RegisterUser, LoginUser, UpdateProductStatus, UpdateUserStatus, FetchAllUsers, GetCategories, AddCategory, DeleteProduct,SearchProducts,DeleteCategory,ForgotPassword}
 
