@@ -1,5 +1,5 @@
 const express = require('express')
-const { getProducts, addProduct, deleteProduct, updateProdStatus, getApprovedProducts, addCategory, getCategory, searchProducts } = require('../controllers/product')
+const { getProducts, addProduct, deleteProduct, updateProdStatus, getApprovedProducts, deleteCategory, addCategory, getCategory, searchProducts } = require('../controllers/product')
 
 const Router = express.Router
 
@@ -18,6 +18,8 @@ router.get("/getApprovedProducts", getApprovedProducts)
 router.post("/addCategory", addCategory)
 
 router.get("/getCategory", getCategory)
+
+router.delete("/deleteCategory/:id", deleteCategory);
 
 router.get('/search', searchProducts)
 module.exports = router

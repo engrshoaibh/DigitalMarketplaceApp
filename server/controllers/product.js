@@ -94,6 +94,18 @@ const addCategory = async (req, res) => {
         res.status(500).json("INTERNAL SERVER ERROR")
     }
 }
+const deleteCategory = async (req, res) => {
+    console.log(req.params.id);
+    try {
+      const category = await Category.findById(req.params.id);
+      if (!category) return res.status(404).json({ message: 'Category not found' });
+  
+      await category.deleteOne();
+      res.json({ message: 'Category deleted' });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
 
 const getCategory = async (req, res) => {
     try {
@@ -130,4 +142,4 @@ const searchProducts = async (req, res) => {
     }
 };
 
-module.exports = { addProduct, deleteProduct, getProducts, updateProdStatus, getApprovedProducts, addCategory, getCategory, searchProducts }
+module.exports = { addProduct, deleteProduct, getProducts, updateProdStatus, getApprovedProducts,deleteCategory, addCategory, getCategory, searchProducts }

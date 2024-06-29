@@ -1,5 +1,5 @@
 const express = require('express')
-const { registerUser, loginUser, getUsers, updateUserStatus} = require('../controllers/user')
+const { registerUser, loginUser, getUsers, updateUserStatus,forgotPassword, verifyEmail} = require('../controllers/user')
 
 const Router = express.Router
 
@@ -13,4 +13,7 @@ router.post("/loginUser", loginUser)
 
 router.patch("/updateUser", updateUserStatus)
 
+router.post("forgot-password", forgotPassword)
+
+router.get('/verify-email', verifyEmail);
 module.exports = router

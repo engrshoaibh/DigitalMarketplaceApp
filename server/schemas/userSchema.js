@@ -4,7 +4,9 @@ const User = mongoose.Schema({
     "email": String,
     "password": String,
     "userType": String,
-    "userStatus" : String
+    "userStatus": String,
+    isVerified: { type: Boolean, default: false }, //verify email
+    token: String
 }, {
     collection: "Users",
     timestamps: true
